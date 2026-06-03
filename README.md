@@ -112,6 +112,22 @@ You can use this package in any of these modes:
 
 ---
 
+## External References
+
+This package implements technical specifications for e-invoicing. Below are links to the relevant standards and portals for your own compliance verification.
+
+| Resource | Link |
+|----------|------|
+| ZATCA Developer Portal (Sandbox) | [https://sandbox.zatca.gov.sa](https://sandbox.zatca.gov.sa) |
+| ZATCA Production Portal | [https://zatca.gov.sa](https://zatca.gov.sa) |
+| E-invoicing regulations (Saudi Arabia) | [https://zatca.gov.sa](https://zatca.gov.sa) |
+| UBL Standard | 2.1 (ISO/IEC 19845) — [https://docs.oasis-open.org/ubl/](https://docs.oasis-open.org/ubl/) |
+| XAdES Signature Standard | ETSI EN 319 132 — [https://www.etsi.org](https://www.etsi.org) |
+
+> This package is built by implementing publicly available technical specifications. For official compliance requirements, always refer to ZATCA's documentation and consult with legal advisors.
+
+---
+
 ## Version Matrix
 
 | Component | Version |
@@ -622,11 +638,19 @@ curl -X POST http://localhost:8000/zatca/invoice/sync \
 
 ---
 
-## Postman Collection
+## Postman Collection (ZATCA Official)
 
-The official ZATCA API Postman collection is available from the [ZATCA Developer Portal](https://sandbox.zatca.gov.sa). It covers all ZATCA endpoints (onboarding, compliance, clearance, reporting).
+The official **ZATCA Fatoora API Postman collection** covers all ZATCA endpoints (onboarding, compliance, clearance, reporting):
 
-For the package's own routes (`/zatca/onboard`, `/zatca/invoice/sync`, `/zatca/status`), use the cURL examples above or create a simple Postman collection from the route table.
+1. Go to [ZATCA Developer Portal](https://sandbox.zatca.gov.sa)
+2. Log in with your developer account
+3. Navigate to **API Documentation** → **Postman Collection**
+4. Download and import into Postman
+5. Set environment variables (base URL, OTP, certificates, etc.)
+
+This collection is maintained by ZATCA and contains all the endpoints that this package calls internally.
+
+For the package's own optional routes (`/zatca/onboard`, `/zatca/invoice/sync`, `/zatca/status`), use the cURL examples above.
 
 ---
 
