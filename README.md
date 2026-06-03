@@ -3,7 +3,9 @@
     <img src="https://img.shields.io/badge/Laravel-9|10|11|12|13-FF2D20.svg?style=for-the-badge&logo=laravel" alt="Laravel Version">
     <img src="https://img.shields.io/badge/ZATCA-Phase_1_%2B_Phase_2-00A859.svg?style=for-the-badge" alt="ZATCA Phase 1 & 2">
     <img src="https://img.shields.io/badge/license-MIT-blue.svg?style=for-the-badge" alt="License">
-    <img src="https://img.shields.io/github/actions/workflow/status/aghfatehi/laravel-zatca/laravel.yml?style=for-the-badge" alt="Tests">
+    <img src="https://img.shields.io/github/actions/workflow/status/aghfatehi/laravel-zatca/laravel.yml?style=for-the-badge&label=Tests" alt="Tests">
+    <img src="https://img.shields.io/packagist/v/aghfatehi/laravel-zatca.svg?style=for-the-badge" alt="Packagist">
+    <img src="https://img.shields.io/packagist/dt/aghfatehi/laravel-zatca.svg?style=for-the-badge" alt="Downloads">
 </p>
 
 <h1 align="center">Laravel ZATCA (Fatoora) Package</h1>
@@ -15,25 +17,24 @@
 
 ---
 
-## 📋 Table of Contents
+## Table of Contents
 
 - [Overview](#overview)
 - [Features](#features)
-- [Version Matrix](#-version-matrix)
+- [Version Matrix](#version-matrix)
 - [Installation](#installation)
 - [Configuration](#configuration)
-- [Integration Modes](#integration-modes)
-- [Phase 1 — QR Code Generation](#-phase-1--qr-code-generation-basic-compliance)
-- [Phase 2 — FATOORA API Integration](#-phase-2--fatoora-api-integration-full-compliance)
-- [QR Code Display on PDF / View](#-qr-code-display-on-pdf--view)
-- [Offline Mode & Queue Sync](#-offline-mode--queue-sync)
-- [Events](#-events)
-- [Artisan Commands](#-artisan-commands)
-- [Testing](#-testing)
-- [Architecture](#-architecture)
-- [Security & Logging](#-security--logging)
-- [PROJECT_MAP](./PROJECT_MAP.md)
-- [Support](#-support)
+- [Integration Scenarios](#integration-scenarios)
+- [Phase 1 -- QR Code Generation](#phase-1--qr-code-generation-basic-compliance)
+- [Phase 2 -- FATOORA API Integration](#phase-2--fatoora-api-integration-full-compliance)
+- [QR Code Display on PDF / View](#qr-code-display-on-pdf--view)
+- [Offline Mode & Queue Sync](#offline-mode--queue-sync)
+- [Events](#events)
+- [Artisan Commands](#artisan-commands)
+- [Testing](#testing)
+- [Security & Logging](#security--logging)
+- [Project Map](./PROJECT_MAP.md)
+- [Support](#support)
 
 ---
 
@@ -45,10 +46,10 @@ The package covers both phases of the ZATCA e-invoicing mandate:
 
 | Phase | Description | Status |
 |-------|-------------|--------|
-| **Phase 1** | Generate and display QR code on invoices (TLV Base64 format) | ✅ Production Ready |
-| **Phase 2** | Full compliance: CSR, Certificate, Signing, Clearance & Reporting via FATOORA API | ✅ Production Ready |
+| **Phase 1** | Generate and display QR code on invoices (TLV Base64 format) | Production Ready |
+| **Phase 2** | Full compliance: CSR, Certificate, Signing, Clearance & Reporting via FATOORA API | Production Ready |
 
-### 🎯 Flexible Integration
+### Flexible Integration
 
 You can use this package in any of these modes:
 
@@ -61,25 +62,25 @@ You can use this package in any of these modes:
 
 ## Features
 
-- ✅ **Phase 1**: TLV Base64 QR code (5 tags: Seller, VAT, Date, Total, Tax)
-- ✅ **Phase 2**: UBL 2.1 XML invoice building & XAdES signing
-- ✅ **Phase 2**: ECDSA secp256k1 key pair generation (OpenSSL)
-- ✅ **Phase 2**: CSR generation for ZATCA compliance certificate
-- ✅ **Phase 2**: Compliance check (Sandbox)
-- ✅ **Phase 2**: Clearance & Reporting (Production)
-- ✅ **cURL-based** HTTP client (no Guzzle dependency)
-- ✅ **Queue support** for async invoice sync with retry logic
-- ✅ **Offline mode** — Generate signed XML locally, sync later
-- ✅ **Artisan commands** for onboarding & syncing
-- ✅ **Event-driven** architecture (InvoiceCleared, InvoiceReported, InvoiceFailed)
-- ✅ **PSR-4 autoloading**, Service Provider auto-discovery
-- ✅ **Logging** with PII masking, non-blocking design
-- ✅ **No UI/frontend assumptions** — Bring your own views
-- ✅ **Configurable phases** via single `.env` variable
+- **Phase 1**: TLV Base64 QR code (5 tags: Seller, VAT, Date, Total, Tax)
+- **Phase 2**: UBL 2.1 XML invoice building & XAdES signing
+- **Phase 2**: ECDSA secp256k1 key pair generation (OpenSSL)
+- **Phase 2**: CSR generation for ZATCA compliance certificate
+- **Phase 2**: Compliance check (Sandbox)
+- **Phase 2**: Clearance & Reporting (Production)
+- **cURL-based** HTTP client (no Guzzle dependency)
+- **Queue support** for async invoice sync with retry logic
+- **Offline mode** -- Generate signed XML locally, sync later
+- **Artisan commands** for onboarding & syncing
+- **Event-driven** architecture (InvoiceCleared, InvoiceReported, InvoiceFailed)
+- **PSR-4 autoloading**, Service Provider auto-discovery
+- **Logging** with PII masking, non-blocking design
+- **No UI/frontend assumptions** -- Bring your own views
+- **Configurable phases** via single `.env` variable
 
 ---
 
-## 📊 Version Matrix
+## Version Matrix
 
 | Component | Version |
 |-----------|---------|
@@ -179,7 +180,7 @@ See [`config/zatca.php`](config/zatca.php) for all available options with docume
 
 ---
 
-## 🟢 Phase 1 — QR Code Generation (Basic Compliance)
+## Phase 1 -- QR Code Generation (Basic Compliance)
 
 Phase 1 requires **no API calls**. It generates a TLV-encoded Base64 QR string containing:
 
@@ -239,7 +240,7 @@ $qrText = Zatca::phase1()->generateQrCodeFromInvoice($invoice, $egsUnit);
 
 ---
 
-## 🔵 Phase 2 — FATOORA API Integration (Full Compliance)
+## Phase 2 -- FATOORA API Integration (Full Compliance)
 
 Phase 2 requires completing the ZATCA onboarding process to obtain a compliance certificate, then signing and submitting invoices.
 
@@ -350,7 +351,7 @@ SyncInvoiceToZatcaJob::dispatch(
 
 ---
 
-## 🖼️ QR Code Display on PDF / View
+## QR Code Display on PDF / View
 
 ### Method 1: Blade View (Direct Rendering)
 
@@ -430,7 +431,7 @@ In `invoice/pdf.blade.php`:
 </html>
 ```
 
-### Method 4: PDF with mpdf (for accounting_backend style)
+### Method 4: PDF with mpdf (for ERP System or E-commerce)
 
 ```php
 use Mpdf\Mpdf;
@@ -469,7 +470,7 @@ $dataUri = $result->getDataUri();
 
 ---
 
-## 🔄 Offline Mode & Queue Sync
+## Offline Mode & Queue Sync
 
 The package natively supports **offline invoice preparation** with **queue-based synchronization**.
 
@@ -521,7 +522,30 @@ php artisan zatca:sync --all
 
 ---
 
-## 📡 Events
+## Data Flow
+
+```
+Phase 1 Flow:
+  Invoice Data (5 tags) --> TLV Encoder --> Base64 --> QR Image
+
+Phase 2 Flow:
+  1. Generate EC Key Pair (secp256k1)
+  2. Generate CSR
+  3. Submit CSR + OTP --> ZATCA API --> Compliance Certificate
+  4. Build UBL 2.1 XML Invoice
+  5. Hash Invoice (SHA-256)
+  6. Create Digital Signature (ECDSA)
+  7. Generate TLV QR (9 tags)
+  8. Embed XAdES Signature
+  9. Submit to ZATCA:
+       - Sandbox:    POST /compliance/invoices
+       - Production: POST /invoices/clearance OR /reporting
+  10. Handle Response --> Fire Events --> Log
+```
+
+---
+
+## Events
 
 The package fires events that you can listen to in your application:
 
@@ -567,7 +591,7 @@ protected $listen = [
 
 ---
 
-## ⚙️ Artisan Commands
+## Artisan Commands
 
 | Command | Description |
 |---------|-------------|
@@ -577,7 +601,7 @@ protected $listen = [
 
 ---
 
-## 🧪 Testing
+## Testing
 
 ```bash
 composer test
@@ -589,71 +613,7 @@ Or with PHPUnit directly:
 vendor/bin/phpunit
 ```
 
----
-
-## 🏗️ Architecture
-
-```
-src/
-├── Commands/          # Artisan commands (onboard, sync, check)
-├── Contracts/         # Interfaces (loose coupling)
-├── DTO/               # Data Transfer Objects
-├── Enums/             # PHP 8.1 enums (phase, environment, status)
-├── Events/            # Domain events
-├── Exceptions/        # Custom exceptions
-├── Facades/           # Laravel facade
-├── Jobs/              # Queue jobs (async sync)
-├── Listeners/         # Event listeners
-├── Logging/           # PII-safe async logger
-├── Models/            # Eloquent models (certificates, logs)
-├── Services/          # Core business logic
-│   ├── ApiClient.php          # cURL-based ZATCA HTTP client
-│   ├── CertificateService.php # EC key & CSR generation
-│   ├── InvoiceSignerService.php # UBL XML builder & signer
-│   ├── Phase1Service.php      # Phase 1: QR code generation
-│   ├── Phase2Service.php      # Phase 2: Compliance & clearance
-│   ├── QrCodeService.php      # TLV encoding & rendering
-│   └── ZatcaService.php       # Facade orchestration
-├── Traits/            # Reusable model traits
-├── ZatcaClient.php             # Main entry point
-├── ZatcaServiceProvider.php    # Service provider with DI
-├── config/zatca.php   # Configuration file
-├── database/migrations/ # Database migrations
-├── resources/views/   # Blade templates
-└── routes/api.php     # API routes
-```
-
-### Data Flow
-
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                        PHASE 1 FLOW                             │
-│                                                                 │
-│  Invoice Data ──► TLV Encoder ──► Base64 ──► QR Image          │
-│  (5 tags)                                                       │
-└─────────────────────────────────────────────────────────────────┘
-
-┌─────────────────────────────────────────────────────────────────┐
-│                        PHASE 2 FLOW                             │
-│                                                                 │
-│  1. Generate EC Key Pair (secp256k1)                            │
-│  2. Generate CSR                                                │
-│  3. Submit CSR + OTP ──► ZATCA API ──► Compliance Certificate  │
-│  4. Build UBL 2.1 XML Invoice                                   │
-│  5. Hash Invoice (SHA-256)                                      │
-│  6. Create Digital Signature (ECDSA)                            │
-│  7. Generate TLV QR (9 tags)                                    │
-│  8. Embed XAdES Signature                                       │
-│  9. Submit to ZATCA:                                            │
-│     ├─ Sandbox:    POST /compliance/invoices                    │
-│     └─ Production: POST /invoices/clearance OR /reporting       │
-│  10. Handle Response ──► Fire Events ──► Log                    │
-└─────────────────────────────────────────────────────────────────┘
-```
-
----
-
-## 🔒 Security & Logging
+## Security & Logging
 
 ### Logging Design
 
@@ -674,7 +634,7 @@ src/
 
 ---
 
-## 🔗 Integration Scenarios
+## Integration Scenarios
 
 ### Scenario 1: New Project — Both Phases
 
@@ -721,12 +681,10 @@ class YourController
 
 ---
 
-## 🆘 Support
+## Support
 
 - **Issues**: [github.com/aghfatehi/laravel-zatca/issues](https://github.com/aghfatehi/laravel-zatca/issues)
 - **Source**: [github.com/aghfatehi/laravel-zatca](https://github.com/aghfatehi/laravel-zatca)
 - **ZATCA Portal**: [sandbox.zatca.gov.sa](https://sandbox.zatca.gov.sa)
 
----
 
-<p align="center">Built with ❤️ for 🇸🇦 Saudi Arabian e-Invoicing Compliance</p>
