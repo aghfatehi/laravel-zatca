@@ -15,7 +15,7 @@
         "ext-mbstring": "*"
     },
     "require-dev": {
-        "orchestra/testbench": "^7.0|^8.0|^9.0|^10.0|^11.0",
+        "orchestra/testbench": "^7.0",
         "phpunit/phpunit": "^9.0|^10.0|^11.0"
     },
     "suggest": {
@@ -30,6 +30,17 @@
     "autoload-dev": {
         "psr-4": {
             "Aghfatehi\\Zatca\\Tests\\": "tests/"
+        }
+    },
+    "config": {
+        "policy": {
+            "advisories": {
+                "ignore-id": [
+                    "PKSA-mdq4-51ck-6kdq",
+                    "PKSA-8qx3-n5y5-vvnd",
+                    "PKSA-w7xr-vk7n-rstm"
+                ]
+            }
         }
     },
     "extra": {
