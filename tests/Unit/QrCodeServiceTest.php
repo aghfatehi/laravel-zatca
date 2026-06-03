@@ -11,7 +11,9 @@ class QrCodeServiceTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->service = new QrCodeService();
+        parent::setUp();
+
+        $this->service = $this->app->make(QrCodeService::class);
     }
 
     public function test_generates_phase1_tlv(): void
