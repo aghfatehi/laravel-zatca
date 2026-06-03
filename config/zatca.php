@@ -44,6 +44,7 @@ return [
         ],
         'timeout' => env('ZATCA_API_TIMEOUT', 60),
     ],
+    'api_middleware' => env('ZATCA_API_MIDDLEWARE', 'api'),
 
     /*
     |--------------------------------------------------------------------------
@@ -77,6 +78,19 @@ return [
     | Queue connection and job settings for async ZATCA operations.
     |
     */
+    /*
+    |--------------------------------------------------------------------------
+    | ZATCA Credentials
+    |--------------------------------------------------------------------------
+    |
+    | Compliance certificate, private key, and secret obtained from onboarding.
+    | These can also be set via environment variables.
+    |
+    */
+    'certificate' => env('ZATCA_CERTIFICATE'),
+    'private_key' => env('ZATCA_PRIVATE_KEY'),
+    'secret' => env('ZATCA_SECRET'),
+
     'queue' => [
         'connection' => env('ZATCA_QUEUE_CONNECTION', 'sync'),
         'queue'      => env('ZATCA_QUEUE_NAME', 'zatca'),

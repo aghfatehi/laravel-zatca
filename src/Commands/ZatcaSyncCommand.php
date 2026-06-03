@@ -10,8 +10,7 @@ class ZatcaSyncCommand extends Command
 {
     protected $signature = 'zatca:sync
         {--invoice= : Single invoice serial number to sync}
-        {--all : Sync all pending invoices}
-        {--force : Skip compliance check, force submit}';
+        {--all : Sync all pending invoices}';
 
     protected $description = 'Sync pending invoices to ZATCA FATOORA platform';
 

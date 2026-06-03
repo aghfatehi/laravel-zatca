@@ -44,12 +44,31 @@ class QrCodeService implements QrCodeGeneratorInterface
 
     public function renderHtmlSvg(string $tlvData, int $size = 200): string
     {
-        $encoded = base64_encode($tlvData);
+        $generator = new SvgQrGenerator();
 
-        return view('zatca::qr-code', [
-            'qrData' => $tlvData,
-            'size' => $size,
-        ])->render();
+        return $generator->generate($tlvData, $size);
+    }
+
+    public function renderAsBase64(string $tlvData, int $size = 200): string
+    {
+        return base64_encode($this->render($tlvData, $size));
+    }
+
+    public function renderAsDataUri(string $tlvData, int $size = 200): string
+    {
+        $output = $this->render($tlvData, $size);
+
+        if (class_exists(\Endroid\QrCode\QrCode::class)) {
+            return 'data:image/png;base64,' . base64_encode($output);
+        }
+
+        return 'data:image/svg+xml;base64,' . base64_encode($output);
+    }
+
+    public function renderToFile(string $tlvData, string $path, int $size = 200): void
+    {
+        $output = $this->render($tlvData, $size);
+        file_put_contents($path, $output);
     }
 
     private function toHex(int $value): string

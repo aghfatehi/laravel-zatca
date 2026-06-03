@@ -34,7 +34,7 @@ class LineItemDTO
             'name' => $this->name,
             'quantity' => $this->quantity,
             'tax_exclusive_price' => $this->taxExclusivePrice,
-            'VAT_percent' => $this->vatPercent,
+            'vat_percent' => $this->vatPercent,
             'other_taxes' => $this->otherTaxes,
             'discounts' => $this->discounts,
         ];

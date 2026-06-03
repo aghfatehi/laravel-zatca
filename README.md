@@ -94,14 +94,22 @@ You can use this package in any of these modes:
 | **OpenSSL** | Required (for key & CSR generation) |
 | **cURL** | Required extension |
 
-### Dependency Recommendations
+### Optional QR Dependencies
 
-| Package | Purpose | Installation |
-|---------|---------|-------------|
-| `endroid/qr-code` | Render QR code as PNG/SVG images | `composer require endroid/qr-code` |
-| `simplesoftwareio/simple-qrcode` | Alternative QR rendering | `composer require simplesoftwareio/simple-qrcode` |
+The package works **out of the box** without any extra packages. When you call `render()`, it generates an SVG QR code using a built-in Blade view.
+
+If you need PNG output or advanced QR features, install one of:
+
+| Package | Purpose | Notes |
+|---------|---------|-------|
+| `endroid/qr-code` | Renders QR as PNG or SVG (requires ext-gd for PNG) | `composer require endroid/qr-code` |
+| `simplesoftwareio/simple-qrcode` | Alternative QR rendering (BaconQrCode wrapper) | `composer require simplesoftwareio/simple-qrcode` |
+
+**How it works:** If one of these packages is installed, `render()` uses it automatically. If not, it falls back to the built-in SVG view. No configuration needed.
 
 ---
+
+
 
 ## Installation
 
@@ -122,11 +130,15 @@ php artisan vendor:publish --tag=zatca-migrations
 php artisan migrate
 ```
 
-### Publish Views (Optional)
+### Publish Views (Optional — to customize QR fallback)
 
 ```bash
 php artisan vendor:publish --tag=zatca-views
 ```
+
+Copies `qr-code.blade.php` to `resources/views/vendor/zatca/` so you can customize the default SVG layout.
+
+> **Note:** This view is only used as a fallback when `endroid/qr-code` is not installed. If you install `endroid/qr-code`, the view is ignored.
 
 ### Verify Installation
 
@@ -167,6 +179,9 @@ ZATCA_QUEUE_NAME=zatca
 ZATCA_QUEUE_TRIES=3
 ZATCA_QUEUE_TIMEOUT=120
 ZATCA_RETRY_DELAY_MINUTES=60
+
+# --- API Routes Middleware ---
+ZATCA_API_MIDDLEWARE=api
 
 # --- Optional: Pre-obtained credentials (skip onboarding) ---
 ZATCA_CERTIFICATE=base64_encoded_certificate
@@ -355,10 +370,66 @@ SyncInvoiceToZatcaJob::dispatch(
 
 ### Method 1: Blade View (Direct Rendering)
 
+**1. In the Controller — generate QR TLV:**
+
+```php
+<?php
+
+namespace App\Http\Controllers;
+
+use Aghfatehi\Zatca\Facades\Zatca;
+
+class InvoiceController extends Controller
+{
+    public function show(Invoice $invoice)
+    {
+        $qrTlv = Zatca::phase1()->generateQrCodeFromInvoice(
+            invoice: $invoice->toInvoiceDto(),
+            egsUnit: [
+                'vat_name' => config('zatca.egs.vat_name'),
+                'vat_number' => config('zatca.egs.vat_number'),
+            ],
+        );
+
+        return view('invoice.show', compact('invoice', 'qrTlv'));
+    }
+}
+```
+
+**2. In the Blade file — render the QR:**
+
 ```blade
 {{-- resources/views/invoice/show.blade.php --}}
-<img src="data:image/png;base64,{{ base64_encode(Zatca::qr()->render($qrTlv, 200)) }}" alt="ZATCA QR Code">
+@extends('layouts.app')
+
+@section('content')
+    <div class="invoice">
+        <h1>invoice No: {{ $invoice->number }}</h1>
+
+        <table>
+            @foreach ($invoice->items as $item)
+                <tr>
+                    <td>{{ $item->name }}</td>
+                    <td>{{ $item->price }}</td>
+                </tr>
+            @endforeach
+        </table>
+
+        {{-- QR Code output — SVG (no deps) or PNG (with endroid/qr-code) --}}
+        <div class="qr-section" style="text-align: center; margin-top: 20px;">
+            <img src="data:image/png;base64,{{ base64_encode(Zatca::qr()->render($qrTlv, 200)) }}"
+                 alt="ZATCA QR Code"
+                 style="width: 200px; height: 200px;">
+        </div>
+    </div>
+@endsection
 ```
+
+**How it works:** `render()` returns:
+- **SVG** — if `endroid/qr-code` is NOT installed (default, no extra deps)
+- **PNG binary** — if `endroid/qr-code` IS installed
+
+Both work with `<img src="data:image/...;base64,...">`.
 
 ### Method 2: Using the Model Trait
 
@@ -448,25 +519,32 @@ $mpdf->WriteHTML($html);
 $mpdf->Output('invoice.pdf', 'D');
 ```
 
-### Method 5: Using endroid/qr-code Directly (Advanced)
+### Method 5: API Routes
+
+The package registers the following API routes (under the `api` middleware by default):
+
+| Method | Path | Description |
+|--------|------|-------------|
+| `POST` | `/zatca/onboard` | Onboard via API — requires `otp` and optional `solution_name` |
+| `POST` | `/zatca/invoice/sync` | Dispatch a sync job — requires `invoice_serial_number` |
+| `GET` | `/zatca/status` | Returns current phase, environment, and enabled status |
+
+You can change the middleware group by setting `ZATCA_API_MIDDLEWARE` in your `.env`.
+
+### Method 6: Advanced Output (Base64, Data URI, File)
 
 ```php
-use Endroid\QrCode\QrCode;
-use Endroid\QrCode\Writer\PngWriter;
+// Base64-encoded image (SVG or PNG depending on installed packages)
+$base64 = Zatca::qr()->renderAsBase64($qrText, 200);
 
-$qrCode = QrCode::create($qrText)
-    ->setSize(200)
-    ->setMargin(10);
+// Data URI ready for <img> tag
+$dataUri = Zatca::qr()->renderAsDataUri($qrText, 200);
 
-$writer = new PngWriter();
-$result = $writer->write($qrCode);
-
-// Save to file
-$result->saveToFile(storage_path('app/public/qr/' . $invoice->id . '.png'));
-
-// Or get as data URI
-$dataUri = $result->getDataUri();
+// Save directly to file (SVG or PNG)
+Zatca::qr()->renderToFile($qrText, storage_path('app/public/qr/invoice.svg'), 200);
 ```
+
+These methods work automatically whether or not `endroid/qr-code` is installed.
 
 ---
 
