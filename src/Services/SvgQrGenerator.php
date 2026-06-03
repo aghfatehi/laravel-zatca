@@ -101,7 +101,8 @@ class SvgQrGenerator
         $mode = 0b0100;
         $charCount = strlen($this->data);
         $versionInfo = self::$versionInfo[$this->version - 1];
-        $totalDataBits = $versionInfo[2];
+        $totalDataBytes = $versionInfo[2];
+        $totalDataBits = $totalDataBytes * 8;
 
         $charCountBits = $this->version < 10 ? 8 : 16;
 
@@ -113,14 +114,11 @@ class SvgQrGenerator
             $this->appendBits($bits, ord($char), 8);
         }
 
-        $dataBits = count($bits);
-        $bitsNeeded = $totalDataBits;
-
-        if ($dataBits > $bitsNeeded) {
+        if (count($bits) > $totalDataBits) {
             throw new \RuntimeException('Data too long for version ' . $this->version);
         }
 
-        $this->appendBits($bits, 0, min(4, $bitsNeeded - $dataBits));
+        $this->appendBits($bits, 0, min(4, $totalDataBits - count($bits)));
 
         while (count($bits) % 8 !== 0) {
             $bits[] = 0;
@@ -139,7 +137,7 @@ class SvgQrGenerator
 
         $padBytes = [236, 17];
         $padIdx = 0;
-        while (count($bytes) < $totalDataBits / 8) {
+        while (count($bytes) < $totalDataBytes) {
             $bytes[] = $padBytes[$padIdx % 2];
             $padIdx++;
         }
