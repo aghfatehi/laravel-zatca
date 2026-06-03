@@ -1,0 +1,25 @@
+name: PHP Syntax Check
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  php-cs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.2
+          tools: composer:v2
+
+      - name: Validate composer
+        run: composer validate
+
+      - name: Check syntax
+        run: find src/ -name "*.php" -exec php -l {} \;
