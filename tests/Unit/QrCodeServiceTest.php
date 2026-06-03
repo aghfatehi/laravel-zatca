@@ -3,7 +3,7 @@
 namespace Aghfatehi\Zatca\Tests\Unit;
 
 use Aghfatehi\Zatca\Services\QrCodeService;
-use PHPUnit\Framework\TestCase;
+use Aghfatehi\Zatca\Tests\TestCase;
 
 class QrCodeServiceTest extends TestCase
 {
