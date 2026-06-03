@@ -10,9 +10,10 @@
 
 <h1 align="center">Laravel ZATCA (Fatoora) Package</h1>
 <h3 align="center">Saudi Arabian e-Invoicing Compliance — Phase 1 & Phase 2</h3>
+<h3 align="center">المرحلة الأولى والثانية للفاتورة الإلكترونية السعودية لهيئة الزكاة والضريبة والجمارك</h3>
 
 <p align="center">
-    <strong>المرحلة الأولى والثانية للفاتورة الإلكترونية السعودية (ZATCA / فاتورة)</strong>
+    <strong>ZATCA integration for Laravel — QR code generation, TLV encoding, invoice signing, clearance & reporting. دمج الفاتورة الإلكترونية مع لارافيل: المرحلة الأولى (QR) والمرحلة الثانية (التوقيع والإرسال) لهيئة الزكاة والضريبة والجمارك السعودية</strong>
 </p>
 
 ---

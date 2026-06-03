@@ -1,9 +1,19 @@
 {
     "name": "aghfatehi/laravel-zatca",
-    "description": "Laravel package for ZATCA (Fatoora) Phase 1 & Phase 2 integration - Saudi Arabia e-invoicing compliance",
+    "description": "Laravel ZATCA (Fatoora) package for Saudi e-invoicing Phase 1 & Phase 2 compliance. دمج الفاتورة الإلكترونية السعودية مع لارافيل - المرحلة الأولى والثانية لهيئة الزكاة والضريبة والجمارك",
     "type": "library",
     "license": "MIT",
-    "keywords": ["zatca", "fatoora", "saudi-arabia", "e-invoicing", "laravel", "zakat", "tax", "phase1", "phase2"],
+    "keywords": [
+        "zatca", "fatoora", "فاتورة", "saudi-arabia", "السعودية",
+        "e-invoicing", "الفاتورة-الإلكترونية",
+        "laravel", "لارافيل",
+        "zakat", "tax", "الزكاة", "الضريبة",
+        "هيئة-الزكاة-والدخل", "هيئة-الزكاة-والضريبة-والجمارك",
+        "phase1", "المرحلة-الأولى",
+        "phase2", "المرحلة-الثانية",
+        "integration", "دمج",
+        "QR", "TLV", "التكامل", "السعودية", "riyadh", "المملكة"
+    ],
     "require": {
         "php": "^8.1|^8.2|^8.3|^8.4",
         "illuminate/support": "^9.0|^10.0|^11.0|^12.0|^13.0",
