@@ -121,8 +121,7 @@ This package implements technical specifications for e-invoicing. Below are link
 | ZATCA Developer Portal (Sandbox) | [https://sandbox.zatca.gov.sa](https://sandbox.zatca.gov.sa) |
 | ZATCA Production Portal | [https://zatca.gov.sa](https://zatca.gov.sa) |
 | E-invoicing regulations (Saudi Arabia) | [https://zatca.gov.sa](https://zatca.gov.sa) |
-| UBL Standard | 2.1 (ISO/IEC 19845) — [https://docs.oasis-open.org/ubl/](https://docs.oasis-open.org/ubl/) |
-| XAdES Signature Standard | ETSI EN 319 132 — [https://www.etsi.org](https://www.etsi.org) |
+
 
 > This package is built by implementing publicly available technical specifications. For official compliance requirements, always refer to ZATCA's documentation and consult with legal advisors.
 
