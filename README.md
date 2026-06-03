@@ -60,6 +60,36 @@ You can use this package in any of these modes:
 3. **Both phases** — Full lifecycle from QR → Signing → Submission
 4. **Offline → Online** — Generate QR codes offline, sync invoices via queue when online
 
+### What is Required vs Optional
+
+**For Phase 1 (QR generation only):**
+| Step | Required? |
+|------|-----------|
+| Install package (`composer require`) | **Required** |
+| Set `ZATCA_PHASE` and `ZATCA_VAT_*` in `.env` | **Required** |
+| Call `Zatca::phase1()->generateQrCodeText()` in your controller | **Required** |
+| Display QR in your Blade view | **Required** |
+| Publish config / views | Optional |
+| Install `endroid/qr-code` for PNG output | Optional |
+| Use Model Trait for automatic QR generation | Optional |
+| API Routes (`/zatca/onboard`, etc.) | Optional — not needed |
+| Offline Mode & Queue Sync | Optional — not needed |
+| Events & Logging | Optional — not needed |
+
+**For Phase 2 (API integration):**
+| Step | Required? |
+|------|-----------|
+| Everything from Phase 1 | **Required** (if using `both`) |
+| Set `ZATCA_PHASE=phase_2` or `=both` | **Required** |
+| Complete onboarding (keys + CSR + certificate) | **Required** |
+| Set `ZATCA_CERTIFICATE`, `ZATCA_PRIVATE_KEY`, `ZATCA_SECRET` | **Required** |
+| Call `Zatca::phase2()->signInvoice()` + `->submitInvoice()` | **Required** |
+| Publish migrations for audit logging | Optional |
+| Use Queue for async sync | Optional |
+| API Routes (`/zatca/onboard`) | Optional — alternative to CLI |
+| Postman Collection | Optional — testing tool |
+| Events & custom listeners | Optional |
+
 ---
 
 ## Features
@@ -118,6 +148,8 @@ If you need PNG output or advanced QR features, install one of:
 ```bash
 composer require aghfatehi/laravel-zatca
 ```
+
+**That's it for Phase 1** — QR codes work immediately. For Phase 2 you also need OpenSSL installed on your server and a ZATCA developer account.
 
 ### Publish Configuration
 
@@ -552,9 +584,11 @@ These methods work automatically whether or not `endroid/qr-code` is installed.
 
 ---
 
-## API Routes
+## API Routes (Optional)
 
-The package registers HTTP API endpoints (separate from the Blade/PHP usage above). By default they use the `api` middleware group — change it with `ZATCA_API_MIDDLEWARE` in your `.env`.
+The package registers HTTP API endpoints. **You do not need these for basic Phase 1 or Phase 2 usage** — they are an alternative to calling the package methods directly from PHP code or Artisan commands.
+
+These routes are separate from the QR rendering methods above. By default they use the `api` middleware group — change it with `ZATCA_API_MIDDLEWARE` in your `.env`.
 
 | Method | Path | Description |
 |--------|------|-------------|
@@ -596,9 +630,9 @@ For the package's own routes (`/zatca/onboard`, `/zatca/invoice/sync`, `/zatca/s
 
 ---
 
-## Offline Mode & Queue Sync
+## Offline Mode & Queue Sync (Optional)
 
-The package natively supports **offline invoice preparation** with **queue-based synchronization**.
+The package natively supports **offline invoice preparation** with **queue-based synchronization**. **You do not need this for basic Phase 1 or Phase 2** — it is only useful if you want to generate and sign invoices when offline, then sync them to ZATCA later.
 
 ### Offline Flow
 
@@ -671,9 +705,9 @@ Phase 2 Flow:
 
 ---
 
-## Events
+## Events (Optional)
 
-The package fires events that you can listen to in your application:
+The package fires events that you can listen to in your application. **Not needed for basic usage** — only useful if you want to react to invoice submission results (e.g., update your database when an invoice is cleared).
 
 | Event | Description | Payload |
 |-------|-------------|---------|
@@ -719,11 +753,11 @@ protected $listen = [
 
 ## Artisan Commands
 
-| Command | Description |
-|---------|-------------|
-| `php artisan zatca:onboard` | Interactive onboarding wizard (generates keys, CSR, gets certificate) |
-| `php artisan zatca:sync` | Sync invoices to ZATCA (single or all pending) |
-| `php artisan zatca:check` | Check package readiness (OpenSSL, config, etc.) |
+| Command | Required | Description |
+|---------|----------|-------------|
+| `php artisan zatca:onboard` | **Phase 2** | Interactive onboarding wizard (generates keys, CSR, gets certificate) |
+| `php artisan zatca:check` | **Phase 1 & 2** | Check package readiness (OpenSSL, config, etc.). Run after install. |
+| `php artisan zatca:sync` | Optional | Sync invoices to ZATCA via queue (single or all pending) |
 
 ---
 
@@ -739,7 +773,9 @@ Or with PHPUnit directly:
 vendor/bin/phpunit
 ```
 
-## Security & Logging
+## Security & Logging (Optional)
+
+Logging is enabled by default but **not required** for basic Phase 1 or Phase 2. It is useful for audit trails and debugging.
 
 ### Logging Design
 
