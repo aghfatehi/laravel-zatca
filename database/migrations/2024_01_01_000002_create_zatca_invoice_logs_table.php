@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::create('zatca_invoice_logs', function (Blueprint $table) {
             $table->id();
-            $table->string('invoice_serial');
+            $table->string('invoice_serial_number');
             $table->string('invoice_uuid')->nullable();
             $table->string('invoice_hash')->nullable();
             $table->string('status')->default('pending');
@@ -23,7 +23,7 @@ return new class extends Migration
             $table->timestamp('cleared_at')->nullable();
             $table->timestamps();
 
-            $table->index('invoice_serial');
+            $table->index('invoice_serial_number');
             $table->index('status');
             $table->index('submitted_at');
         });

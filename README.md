@@ -173,12 +173,23 @@ composer require aghfatehi/laravel-zatca
 php artisan vendor:publish --tag=zatca-config
 ```
 
-### Publish Migrations (Optional — for audit logging)
+### Publish Migrations (Optional — for Phase 2 API & audit logging)
+
+Publish and run the migrations only if you are using the optional Phase 2 API routes (onboarding, invoice clearance/reporting):
 
 ```bash
 php artisan vendor:publish --tag=zatca-migrations
 php artisan migrate
 ```
+
+This creates two tables:
+
+| Table | Purpose |
+|---|---|
+| `zatca_certificates` | Stores EGS certificate and private key after ZATCA onboarding (used for invoice signing) |
+| `zatca_invoice_logs` | Logs every invoice submission request/response with `invoice_serial_number` for clearance & reporting audit trail |
+
+You do **not** need these migrations if you only use Phase 1 (QR code generation).
 
 ### Publish Views (Optional — to customize QR fallback)
 
@@ -410,7 +421,7 @@ $result = Zatca::phase2()->submitInvoice(
 );
 
 if ($result->success) {
-    echo 'Invoice submitted successfully! Request ID: ' . $result->requestId;
+    echo 'Invoice submitted successfully! Request ID: ' . $result->requestID;
 }
 ```
 

@@ -9,7 +9,7 @@ class ZatcaInvoiceLog extends Model
     protected $table = 'zatca_invoice_logs';
 
     protected $fillable = [
-        'invoice_serial',
+        'invoice_serial_number',
         'invoice_uuid',
         'invoice_hash',
         'status',

@@ -20,6 +20,7 @@ class Phase2Service
 
     public function generateKeysAndCsr(array $egsUnit, string $solutionName = 'ERP'): array
     {
+        // @todo: accept EgsUnitDTO instead of raw array; create EgsUnitDTO at call site
         $this->logger->info('Phase2: Generating keys and CSR');
 
         $privateKey = $this->certificateService->generateEcKeyPair();

@@ -50,7 +50,7 @@ class Phase1Service
             $subtotal = ($item['tax_exclusive_price'] ?? 0) * ($item['quantity'] ?? 0);
             $discounts = array_sum(array_column($item['discounts'] ?? [], 'amount'));
             $taxable = $subtotal - $discounts;
-            $vat = $taxable * ($item['VAT_percent'] ?? 0);
+            $vat = $taxable * ($item['vat_percent'] ?? 0);
             $total += $taxable + $vat;
         }
 
@@ -65,7 +65,7 @@ class Phase1Service
             $subtotal = ($item['tax_exclusive_price'] ?? 0) * ($item['quantity'] ?? 0);
             $discounts = array_sum(array_column($item['discounts'] ?? [], 'amount'));
             $taxable = $subtotal - $discounts;
-            $vat += $taxable * ($item['VAT_percent'] ?? 0);
+            $vat += $taxable * ($item['vat_percent'] ?? 0);
         }
 
         return round($vat, 2);

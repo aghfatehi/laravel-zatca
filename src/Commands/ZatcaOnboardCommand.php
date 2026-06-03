@@ -22,6 +22,7 @@ class ZatcaOnboardCommand extends Command
         $this->info('ZATCA Onboarding Wizard');
         $this->newLine();
 
+        // @todo: replace raw array with EgsUnitDTO::fromArray() once DTO is wired into services
         $egsUnit = [
             'uuid' => $this->ask('EGS UUID', config('zatca.egs.uuid')),
             'custom_id' => $this->ask('EGS Custom ID', config('zatca.egs.uuid')),
@@ -30,15 +31,15 @@ class ZatcaOnboardCommand extends Command
             'vat_name' => $this->ask('VAT Name', config('zatca.egs.vat_name')),
             'crn_number' => $this->ask('CRN Number', config('zatca.egs.crn_number')),
             'location' => [
-                'city' => $this->ask('City', config('zatca.egs.city')),
-                'city_subdivision' => $this->ask('City Subdivision', config('zatca.egs.city_subdivision')),
-                'street' => $this->ask('Street', config('zatca.egs.street')),
-                'building' => $this->ask('Building Number', config('zatca.egs.building')),
-                'plot_identification' => $this->ask('Plot Identification', config('zatca.egs.plot_id')),
-                'postal_zone' => $this->ask('Postal Zone', config('zatca.egs.postal_zone')),
+                'city' => $this->ask('City', config('zatca.egs.location.city')),
+                'city_subdivision' => $this->ask('City Subdivision', config('zatca.egs.location.city_subdivision')),
+                'street' => $this->ask('Street', config('zatca.egs.location.street')),
+                'building' => $this->ask('Building Number', config('zatca.egs.location.building')),
+                'plot_identification' => $this->ask('Plot Identification', config('zatca.egs.location.plot_identification')),
+                'postal_zone' => $this->ask('Postal Zone', config('zatca.egs.location.postal_zone')),
             ],
             'branch_name' => $this->ask('Branch Name', config('zatca.egs.branch_name')),
-            'branch_industry' => $this->ask('Branch Industry', config('zatca.egs.industry')),
+            'branch_industry' => $this->ask('Branch Industry', config('zatca.egs.branch_industry')),
         ];
 
         $solutionName = $this->option('solution-name');

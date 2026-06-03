@@ -20,7 +20,7 @@ Route::middleware(config('zatca.api_middleware', 'api'))->prefix('zatca')->group
 
             return response()->json([
                 'success' => $compliance->success,
-                'request_id' => $compliance->requestId,
+                'request_id' => $compliance->requestID,
                 'binary_security_token' => $compliance->binarySecurityToken,
                 'secret' => $compliance->secret,
                 'error_message' => $compliance->errorMessage,

@@ -6,7 +6,7 @@ class ComplianceResultDTO
 {
     public function __construct(
         public readonly bool    $success,
-        public readonly string  $requestId = '',
+        public readonly string  $requestID = '',
         public readonly string  $binarySecurityToken = '',
         public readonly string  $secret = '',
         public readonly ?string $errorMessage = null,
@@ -19,7 +19,7 @@ class ComplianceResultDTO
 
         return new self(
             success: !$hasError,
-            requestId: $response->requestID ?? '',
+            requestID: $response->requestID ?? '',
             binarySecurityToken: $response->binarySecurityToken ?? '',
             secret: $response->secret ?? '',
             errorMessage: $response->errors[0]->message ?? null,

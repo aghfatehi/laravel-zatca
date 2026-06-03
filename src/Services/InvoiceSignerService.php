@@ -405,7 +405,7 @@ class InvoiceSignerService implements InvoiceSignerInterface
             $subtotal = ($item['tax_exclusive_price'] ?? 0) * ($item['quantity'] ?? 0);
             $discountsTotal = array_sum(array_column($item['discounts'] ?? [], 'amount'));
             $taxableAmount = $subtotal - $discountsTotal;
-            $vatAmount = $taxableAmount * ($item['VAT_percent'] ?? 0);
+            $vatAmount = $taxableAmount * ($item['vat_percent'] ?? 0);
 
             $this->appendElement($doc, $line, 'cbc:LineExtensionAmount', number_format($taxableAmount, 2, '.', ''), ['currencyID' => 'SAR']);
 
@@ -418,7 +418,7 @@ class InvoiceSignerService implements InvoiceSignerInterface
             $this->appendElement($doc, $itemEl, 'cbc:Name', $item['name'] ?? '');
 
             $cat = $doc->createElement('cac:ClassifiedTaxCategory');
-            $vatPercent = ($item['VAT_percent'] ?? 0) * 100;
+            $vatPercent = ($item['vat_percent'] ?? 0) * 100;
             $this->appendElement($doc, $cat, 'cbc:ID', $vatPercent > 0 ? 'S' : 'O');
             $this->appendElement($doc, $cat, 'cbc:Percent', number_format($vatPercent, 2, '.', ''));
             $ts2 = $doc->createElement('cac:TaxScheme');
@@ -444,13 +444,13 @@ class InvoiceSignerService implements InvoiceSignerInterface
             $subtotal = ($item['tax_exclusive_price'] ?? 0) * ($item['quantity'] ?? 0);
             $discounts = array_sum(array_column($item['discounts'] ?? [], 'amount'));
             $taxable = $subtotal - $discounts;
-            $vat = $taxable * ($item['VAT_percent'] ?? 0);
+            $vat = $taxable * ($item['vat_percent'] ?? 0);
             $totalVat += $vat;
 
-            $percent = ($item['VAT_percent'] ?? 0) * 100;
+            $percent = ($item['vat_percent'] ?? 0) * 100;
             $key = (string)$percent;
             if (!isset($taxSubtotals[$key])) {
-                $taxSubtotals[$key] = ['taxable' => 0, 'vat' => 0, 'percent' => $item['VAT_percent'] ?? 0];
+                $taxSubtotals[$key] = ['taxable' => 0, 'vat' => 0, 'percent' => $item['vat_percent'] ?? 0];
             }
             $taxSubtotals[$key]['taxable'] += $taxable;
             $taxSubtotals[$key]['vat'] += $vat;
@@ -497,7 +497,7 @@ class InvoiceSignerService implements InvoiceSignerInterface
             $discounts = array_sum(array_column($item['discounts'] ?? [], 'amount'));
             $taxable = $subtotal - $discounts;
             $totalSubtotal += $taxable;
-            $totalVat += $taxable * ($item['VAT_percent'] ?? 0);
+            $totalVat += $taxable * ($item['vat_percent'] ?? 0);
         }
 
         $total = $doc->createElement('cac:LegalMonetaryTotal');

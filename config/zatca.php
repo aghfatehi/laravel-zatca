@@ -56,18 +56,20 @@ return [
     |
     */
     'egs' => [
-        'uuid'          => env('ZATCA_EGS_UUID', ''),
-        'vat_number'    => env('ZATCA_VAT_NUMBER', ''),
-        'vat_name'      => env('ZATCA_VAT_NAME', ''),
-        'crn_number'    => env('ZATCA_CRN_NUMBER', ''),
-        'industry'      => env('ZATCA_INDUSTRY', 'Retail'),
-        'city'          => env('ZATCA_CITY', 'Riyadh'),
-        'city_subdivision' => env('ZATCA_CITY_SUBDIVISION', ''),
-        'street'        => env('ZATCA_STREET', ''),
-        'building'      => env('ZATCA_BUILDING', '0000'),
-        'plot_id'       => env('ZATCA_PLOT_ID', '0000'),
-        'postal_zone'   => env('ZATCA_POSTAL_ZONE', '00000'),
-        'branch_name'   => env('ZATCA_BRANCH_NAME', 'Main Branch'),
+        'uuid'            => env('ZATCA_EGS_UUID', ''),
+        'vat_number'      => env('ZATCA_VAT_NUMBER', ''),
+        'vat_name'        => env('ZATCA_VAT_NAME', ''),
+        'crn_number'      => env('ZATCA_CRN_NUMBER', ''),
+        'branch_industry' => env('ZATCA_INDUSTRY', 'Retail'),
+        'branch_name'     => env('ZATCA_BRANCH_NAME', 'Main Branch'),
+        'location' => [
+            'city'               => env('ZATCA_CITY', 'Riyadh'),
+            'city_subdivision'   => env('ZATCA_CITY_SUBDIVISION', ''),
+            'street'             => env('ZATCA_STREET', ''),
+            'building'           => env('ZATCA_BUILDING', '0000'),
+            'plot_identification'=> env('ZATCA_PLOT_ID', '0000'),
+            'postal_zone'        => env('ZATCA_POSTAL_ZONE', '00000'),
+        ],
     ],
 
     /*

@@ -2,6 +2,26 @@
 
 namespace Aghfatehi\Zatca\DTO;
 
+/**
+ * Future Development — EGS Unit Data Transfer Object
+ *
+ * This DTO is ready for future use when the package adopts
+ * typed DTOs throughout Phase2Service instead of raw arrays.
+ *
+ * Planned usage:
+ *   - Validate/normalize EGS unit data from config('zatca.egs') or API input
+ *   - Replace raw array access in Phase2Service::generateKeysAndCsr()
+ *   - Replace raw array access in InvoiceSignerService::sign(), buildXml()
+ *
+ * Not yet wired into active code paths. Once wired:
+ *   1. EgsUnitDTO::fromArray($egsUnitArray) at service boundaries
+ *   2. Pass EgsUnitDTO internally instead of array
+ *   3. Access typed properties instead of $data['key']
+ *
+ * Note: location fields live in a nested array keyed 'location' at runtime
+ * (see ZatcaOnboardCommand). fromArray() currently expects flat keys for
+ * simplicity — update if wiring to nested source.
+ */
 class EgsUnitDTO
 {
     public function __construct(
