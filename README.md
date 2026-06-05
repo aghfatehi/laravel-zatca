@@ -6,11 +6,13 @@
     <img src="https://img.shields.io/github/actions/workflow/status/aghfatehi/laravel-zatca/laravel.yml?style=for-the-badge&label=Tests" alt="Tests">
     <img src="https://img.shields.io/packagist/v/aghfatehi/laravel-zatca.svg?style=for-the-badge" alt="Packagist">
     <img src="https://img.shields.io/packagist/dt/aghfatehi/laravel-zatca.svg?style=for-the-badge" alt="Downloads">
+    <img src="https://img.shields.io/badge/Author-AL--AGHBARI%20Fatehi-blue.svg?style=for-the-badge" alt="Author">
 </p>
 
 <h1 align="center">Laravel ZATCA (Fatoora) Package</h1>
 <h3 align="center">Saudi Arabian e-Invoicing Compliance — Phase 1 & Phase 2</h3>
 <h3 align="center">المرحلة الأولى والثانية للفاتورة الإلكترونية السعودية لهيئة الزكاة والضريبة والجمارك</h3>
+<h4 align="center">By <a href="https://github.com/aghfatehi">AL-AGHBARI Fatehi</a> &mdash; <strong>فتحي الأغبري</strong></h4>
 
 <p align="center">
     <strong>ZATCA integration for Laravel — QR code generation, TLV encoding, invoice signing, clearance & reporting. دمج الفاتورة الإلكترونية مع لارافيل: المرحلة الأولى (QR) والمرحلة الثانية (التوقيع والإرسال) لهيئة الزكاة والضريبة والجمارك السعودية</strong>
