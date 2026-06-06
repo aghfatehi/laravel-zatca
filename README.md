@@ -1,12 +1,12 @@
 <p align="center">
-    <img src="https://img.shields.io/badge/php-^8.1-8892BF.svg?style=for-the-badge&logo=php" alt="PHP Version">
-    <img src="https://img.shields.io/badge/Laravel-9|10|11|12|13-FF2D20.svg?style=for-the-badge&logo=laravel" alt="Laravel Version">
-    <img src="https://img.shields.io/badge/ZATCA-Phase_1_%2B_Phase_2-00A859.svg?style=for-the-badge" alt="ZATCA Phase 1 & 2">
-    <img src="https://img.shields.io/badge/license-MIT-blue.svg?style=for-the-badge" alt="License">
-    <img src="https://img.shields.io/github/actions/workflow/status/aghfatehi/laravel-zatca/laravel.yml?style=for-the-badge&label=Tests" alt="Tests">
-    <img src="https://img.shields.io/packagist/v/aghfatehi/laravel-zatca.svg?style=for-the-badge" alt="Packagist">
-    <img src="https://img.shields.io/packagist/dt/aghfatehi/laravel-zatca.svg?style=for-the-badge" alt="Downloads">
-    <img src="https://img.shields.io/badge/Author-AL--AGHBARI%20Fatehi-blue.svg?style=for-the-badge" alt="Author">
+    <a href="https://www.php.net/"><img src="https://img.shields.io/badge/php-^8.1-8892BF.svg?style=for-the-badge&logo=php" alt="PHP Version"></a>
+    <a href="https://laravel.com/"><img src="https://img.shields.io/badge/Laravel-9|10|11|12|13-FF2D20.svg?style=for-the-badge&logo=laravel" alt="Laravel Version"></a>
+    <a href="https://zatca.gov.sa/"><img src="https://img.shields.io/badge/ZATCA-Phase_1_%2B_Phase_2-00A859.svg?style=for-the-badge" alt="ZATCA Phase 1 & 2"></a>
+    <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg?style=for-the-badge" alt="License"></a>
+    <a href="https://github.com/aghfatehi/laravel-zatca/actions"><img src="https://img.shields.io/github/actions/workflow/status/aghfatehi/laravel-zatca/laravel.yml?style=for-the-badge&label=Tests" alt="Tests"></a>
+    <a href="https://packagist.org/packages/aghfatehi/laravel-zatca"><img src="https://img.shields.io/packagist/v/aghfatehi/laravel-zatca.svg?style=for-the-badge" alt="Packagist"></a>
+    <a href="https://packagist.org/packages/aghfatehi/laravel-zatca"><img src="https://img.shields.io/packagist/dt/aghfatehi/laravel-zatca.svg?style=for-the-badge" alt="Downloads"></a>
+    <a href="https://github.com/aghfatehi"><img src="https://img.shields.io/badge/Author-AL--AGHBARI%20Fatehi-blue.svg?style=for-the-badge" alt="Author"></a>
 </p>
 
 <h1 align="center">Laravel ZATCA (Fatoora) Package</h1>
