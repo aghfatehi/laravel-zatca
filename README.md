@@ -73,7 +73,7 @@ You can use this package in any of these modes:
 | Call `Zatca::phase1()->generateQrCodeText()` in your controller | **Required** |
 | Display QR in your Blade view | **Required** |
 | Publish config / views | Optional |
-| Install `endroid/qr-code` for PNG output | Optional |
+| Install `simplesoftwareio/simple-qrcode` or `endroid/qr-code` for ZATCA-compatible QR | Optional but **recommended** |
 | Use Model Trait for automatic QR generation | Optional |
 | API Routes (`/zatca/onboard`, etc.) | Optional — not needed |
 | Offline Mode & Queue Sync | Optional — not needed |
@@ -146,16 +146,14 @@ This package implements technical specifications for e-invoicing. Below are link
 
 ### Optional QR Dependencies
 
-The package works **out of the box** without any extra packages. When you call `render()`, it generates an SVG QR code using a built-in Blade view.
+The built-in QR generator (`SvgQrGenerator`) produces **visual-only output** that is **not** compatible with the official ZATCA (Fatoora) app. For production use, you **must** install one of these:
 
-If you need PNG output or advanced QR features, install one of:
+| Package | Purpose | Install |
+|---------|---------|---------|
+| `simplesoftwareio/simple-qrcode` | ✅ ZATCA-compatible SVG QR | `composer require simplesoftwareio/simple-qrcode` |
+| `endroid/qr-code` | ✅ ZATCA-compatible QR (SVG/PNG) | `composer require endroid/qr-code` |
 
-| Package | Purpose | Notes |
-|---------|---------|-------|
-| `endroid/qr-code` | Renders QR as PNG or SVG (requires ext-gd for PNG) | `composer require endroid/qr-code` |
-| `simplesoftwareio/simple-qrcode` | Alternative QR rendering (BaconQrCode wrapper) | `composer require simplesoftwareio/simple-qrcode` |
-
-**How it works:** If one of these packages is installed, `render()` uses it automatically. If not, it falls back to the built-in SVG view. No configuration needed.
+If one of these is installed, the **Blade view** uses it automatically. If neither is installed, the built-in fallback produces a QR image that will **not** be readable by the ZATCA app.
 
 ---
 
@@ -167,7 +165,7 @@ If you need PNG output or advanced QR features, install one of:
 composer require aghfatehi/laravel-zatca
 ```
 
-**That's it for Phase 1** — QR codes work immediately. For Phase 2 you also need OpenSSL installed on your server and a ZATCA developer account.
+**That's it for Phase 1** — TLV generation works immediately. For QR rendering, you must install `simplesoftwareio/simple-qrcode` or `endroid/qr-code` (see [Optional QR Dependencies](#optional-qr-dependencies)). For Phase 2 you also need OpenSSL installed on your server and a ZATCA developer account.
 
 ### Publish Configuration
 
@@ -202,7 +200,7 @@ php artisan vendor:publish --tag=zatca-views
 
 Copies `qr-code.blade.php` to `resources/views/vendor/zatca/` so you can customize the default SVG layout.
 
-> **Note:** This view is only used as a fallback when `endroid/qr-code` is not installed. If you install `endroid/qr-code`, the view is ignored.
+> **Note:** This view auto-detects `simplesoftwareio/simple-qrcode`, `endroid/qr-code`, and falls back to the built-in generator. Publish only if you need to customize the template.
 
 ### Verify Installation
 
@@ -493,7 +491,7 @@ class InvoiceController extends Controller
             @endforeach
         </table>
 
-        {{-- QR Code output — SVG (no deps) or PNG (with endroid/qr-code) --}}
+        {{-- QR Code output — PNG (with endroid/qr-code) or SVG (fallback, not ZATCA-compatible) --}}
         <div class="qr-section" style="text-align: center; margin-top: 20px;">
             <img src="data:image/png;base64,{{ base64_encode(Zatca::qr()->render($qrTlv, 200)) }}"
                  alt="ZATCA QR Code"
@@ -503,11 +501,12 @@ class InvoiceController extends Controller
 @endsection
 ```
 
-**How it works:** `render()` returns:
-- **SVG** — if `endroid/qr-code` is NOT installed (visual-only, **not ZATCA-compatible**)
-- **PNG binary** — if `endroid/qr-code` IS installed
+**How it works:** `render()` auto-detects installed packages in this order:
+1. `simplesoftwareio/simple-qrcode` → SVG (ZATCA-compatible)
+2. `endroid/qr-code` → PNG (ZATCA-compatible)
+3. Built-in `SvgQrGenerator` → SVG (visual-only, **not ZATCA-compatible**)
 
-> **Note:** Without `endroid/qr-code`, the SVG output from `render()` uses the built-in `SvgQrGenerator` which is **not** compatible with the ZATCA app. Install `endroid/qr-code` for production use.
+> **Note:** This is the same priority as the built-in Blade view. Install either `simplesoftwareio/simple-qrcode` or `endroid/qr-code` for production use.
 
 ### Method 2: Using the Built-in Blade View
 
@@ -575,6 +574,46 @@ class InvoiceController extends Controller
 
 > **Note:** This view is always available (no `vendor:publish` required). Run `php artisan vendor:publish --tag=zatca-views` only if you need to customize the blade template.
 
+### Phase 2 QR Code (9 Tags)
+
+Phase 1 QR contains 5 tags (seller name, VAT, date, total, tax). When scanned with the ZATCA (Fatoora) app, it displays a notice: *"This code is not compatible with Phase 2"* — this is **normal** for Phase 1 QR.
+
+For full Phase 2 compliance, the QR must contain **9 tags** including the invoice hash and digital signature. Generate it **after signing the invoice**:
+
+```php
+$qrData = Zatca::generatePhase2Qr(
+    sellerName: config('zatca.egs.vat_name'),
+    vatNumber: config('zatca.egs.vat_number'),
+    invoiceDate: $invoice->created_at->format('Y-m-d\TH:i:s\Z'),
+    totalAmount: '115.00',
+    taxAmount: '15.00',
+    invoiceHash: $signedInvoice['invoice_hash'],          // from InvoiceSignerService
+    digitalSignature: $signedInvoice['digital_signature'], // ECDSA signature
+    publicKey: $signedInvoice['public_key'],               // from certificate
+    certificateSignature: $signedInvoice['certificate_signature'], // from ZATCA
+);
+```
+
+Then pass it to the same view:
+
+```blade
+@include('zatca::qr-code', ['qrData' => $qrData, 'size' => 200])
+```
+
+The 9 tags in a Phase 2 QR:
+
+| Tag | Field | Source |
+|-----|-------|--------|
+| 1 | Seller Name | Config |
+| 2 | VAT Number | Config |
+| 3 | Timestamp | Invoice date |
+| 4 | Invoice Total | Invoice |
+| 5 | Total VAT | Invoice |
+| 6 | Invoice Hash | SHA-256 of signed XML |
+| 7 | Digital Signature | ECDSA signature |
+| 8 | Public Key | EC certificate |
+| 9 | Certificate Signature | ZATCA certificate |
+
 ### Method 3: Using the Model Trait
 
 Add the trait to your invoice model:
@@ -615,10 +654,10 @@ $qrText = Zatca::phase1()->generateQrCodeText(
     taxAmount: (string)$invoice->tax_amount,
 );
 
-// Generate QR as base64 image
-$qrBase64 = base64_encode(Zatca::qr()->render($qrText, 150));
+// Generate QR as data URI (auto-detects format)
+$qrDataUri = Zatca::qr()->renderAsDataUri($qrText, 150);
 
-$pdf = Pdf::loadView('invoice.pdf', compact('invoice', 'qrBase64'));
+$pdf = Pdf::loadView('invoice.pdf', compact('invoice', 'qrDataUri'));
 return $pdf->download('invoice.pdf');
 ```
 
@@ -640,7 +679,7 @@ In `invoice/pdf.blade.php`:
         @endforeach
     </table>
     <div class="qr-code">
-        <img src="data:image/png;base64,{{ $qrBase64 }}" alt="ZATCA QR">
+        <img src="{{ $qrDataUri }}" alt="ZATCA QR">
     </div>
 </body>
 </html>
@@ -653,10 +692,10 @@ use Mpdf\Mpdf;
 
 $mpdf = new Mpdf(['mode' => 'utf-8', 'format' => 'A4']);
 $qrText = Zatca::phase1()->generateQrCodeText(...);
-$qrBase64 = base64_encode(Zatca::qr()->render($qrText, 150));
+$qrDataUri = Zatca::qr()->renderAsDataUri($qrText, 150);
 
 $html = '<div style="position: absolute; bottom: 10mm; right: 10mm;">
-    <img src="@' . $qrBase64 . '" width="150" height="150"/>
+    <img src="' . $qrDataUri . '" width="150" height="150"/>
 </div>';
 
 $mpdf->WriteHTML($html);
@@ -676,7 +715,7 @@ $dataUri = Zatca::qr()->renderAsDataUri($qrText, 200);
 Zatca::qr()->renderToFile($qrText, storage_path('app/public/qr/invoice.svg'), 200);
 ```
 
-These methods work automatically whether or not `endroid/qr-code` is installed.
+These methods work automatically — output format depends on which package is installed (see [Method 1](#method-1-blade-view-direct-rendering)).
 
 ---
 

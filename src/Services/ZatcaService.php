@@ -69,4 +69,28 @@ class ZatcaService
 
         return $this->phase1->generateQrCodeFromInvoice($invoice, $egsUnit);
     }
+
+    public function generatePhase2Qr(
+        string $sellerName,
+        string $vatNumber,
+        string $invoiceDate,
+        string $totalAmount,
+        string $taxAmount,
+        string $invoiceHash,
+        string $digitalSignature,
+        string $publicKey,
+        string $certificateSignature,
+    ): string {
+        return $this->qrService->generatePhase2Qr(
+            sellerName: $sellerName,
+            vatNumber: $vatNumber,
+            invoiceDate: $invoiceDate,
+            totalAmount: $totalAmount,
+            taxAmount: $taxAmount,
+            invoiceHash: $invoiceHash,
+            digitalSignature: $digitalSignature,
+            publicKey: $publicKey,
+            certificateSignature: $certificateSignature,
+        );
+    }
 }

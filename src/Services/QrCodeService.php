@@ -22,6 +22,12 @@ class QrCodeService implements QrCodeGeneratorInterface
 
     public function render(string $tlvData, int $size = 200): string
     {
+        if (class_exists(\SimpleSoftwareIO\QrCode\Facades\QrCode::class)) {
+            return \SimpleSoftwareIO\QrCode\Facades\QrCode::format('svg')
+                ->size($size)
+                ->generate($tlvData);
+        }
+
         if (class_exists(\Endroid\QrCode\QrCode::class)) {
             return $this->renderWithEndroid($tlvData, $size);
         }
@@ -57,6 +63,10 @@ class QrCodeService implements QrCodeGeneratorInterface
     public function renderAsDataUri(string $tlvData, int $size = 200): string
     {
         $output = $this->render($tlvData, $size);
+
+        if (class_exists(\SimpleSoftwareIO\QrCode\Facades\QrCode::class)) {
+            return 'data:image/svg+xml;base64,' . base64_encode($output);
+        }
 
         if (class_exists(\Endroid\QrCode\QrCode::class)) {
             return 'data:image/png;base64,' . base64_encode($output);
