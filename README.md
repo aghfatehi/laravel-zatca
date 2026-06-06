@@ -511,7 +511,15 @@ Both work with `<img src="data:image/...;base64,...">`.
 
 ### Method 2: Using the Built-in Blade View
 
-The package ships with a `qr-code.blade.php` view under the `zatca::` namespace. It uses the built-in pure-PHP SVG QR generator (no extra dependencies) and accepts two variables:
+The package ships with a `qr-code.blade.php` view under the `zatca::` namespace. It **auto-detects** the best available QR library:
+
+| Priority | Library | Output | How to install |
+|---|---|---|---|
+| 1st | `simplesoftwareio/simple-qrcode` | SVG | `composer require simplesoftwareio/simple-qrcode` |
+| 2nd | `endroid/qr-code` | SVG | `composer require endroid/qr-code` |
+| 3rd | Built-in `SvgQrGenerator` (fallback) | SVG | No installation needed |
+
+**View variables:**
 
 | Variable | Type | Default | Description |
 |---|---|---|---|
@@ -563,7 +571,7 @@ class InvoiceController extends Controller
 @endsection
 ```
 
-> **Note:** This view is always available (no `vendor:publish` required). Run `php artisan vendor:publish --tag=zatca-views` only if you need to customize the blade template.
+> **Note:** This view is always available (no `vendor:publish` required). Run `php artisan vendor:publish --tag=zatca-views` only if you need to customize the blade template. When `simplesoftwareio/simple-qrcode` is installed, the view uses it directly — producing ZATCA-compatible QR codes without any configuration.
 
 ### Method 3: Using the Model Trait
 
