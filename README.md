@@ -32,7 +32,6 @@
 - [Phase 2 -- FATOORA API Integration](#phase-2--fatoora-api-integration-full-compliance)
 - [QR Code Display on PDF / View](#qr-code-display-on-pdf--view)
 - [API Routes](#api-routes)
-- [Postman Collection](#postman-collection)
 - [Offline Mode & Queue Sync](#offline-mode--queue-sync)
 - [Events](#events)
 - [Artisan Commands](#artisan-commands)
@@ -90,7 +89,6 @@ You can use this package in any of these modes:
 | Publish migrations for audit logging | Optional |
 | Use Queue for async sync | Optional |
 | API Routes (`/zatca/onboard`) | Optional — alternative to CLI |
-| Postman Collection | Optional — testing tool |
 | Events & custom listeners | Optional |
 
 ---
@@ -754,22 +752,6 @@ curl -X POST http://localhost:8000/zatca/invoice/sync \
   -H "Accept: application/json" \
   -d '{"invoice_serial_number": "INV-001"}'
 ```
-
----
-
-## Postman Collection (ZATCA Official)
-
-The official **ZATCA Fatoora API Postman collection** covers all ZATCA endpoints (onboarding, compliance, clearance, reporting):
-
-1. Go to [ZATCA Developer Portal](https://sandbox.zatca.gov.sa)
-2. Log in with your developer account
-3. Navigate to **API Documentation** → **Postman Collection**
-4. Download and import into Postman
-5. Set environment variables (base URL, OTP, certificates, etc.)
-
-This collection is maintained by ZATCA and contains all the endpoints that this package calls internally.
-
-For the package's own optional routes (`/zatca/onboard`, `/zatca/invoice/sync`, `/zatca/status`), use the cURL examples above.
 
 ---
 
