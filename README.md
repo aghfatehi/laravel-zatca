@@ -181,7 +181,8 @@ Publish and run the migrations only if you are using the optional Phase 2 API ro
 
 ```bash
 php artisan vendor:publish --tag=zatca-migrations
-php artisan migrate
+php artisan migrate --path=/database/migrations/2024_01_01_000001_create_zatca_certificates_table.php
+php artisan migrate --path=/database/migrations/2024_01_01_000002_create_zatca_invoice_logs_table.php
 ```
 
 This creates two tables:
