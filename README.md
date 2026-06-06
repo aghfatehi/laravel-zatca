@@ -509,7 +509,63 @@ class InvoiceController extends Controller
 
 Both work with `<img src="data:image/...;base64,...">`.
 
-### Method 2: Using the Model Trait
+### Method 2: Using the Built-in Blade View
+
+The package ships with a `qr-code.blade.php` view under the `zatca::` namespace. It uses the built-in pure-PHP SVG QR generator (no extra dependencies) and accepts two variables:
+
+| Variable | Type | Default | Description |
+|---|---|---|---|
+| `$qrData` | string | required | TLV-encoded QR text from `generateQrCodeText()` |
+| `$size` | int | 200 | Width/height of the QR code in pixels |
+
+**Example:**
+
+```blade
+{{-- Pass TLV data from controller --}}
+@include('zatca::qr-code', ['qrData' => $qrTlv, 'size' => 200])
+```
+
+**Full controller + view example:**
+
+```php
+use Zatca;
+
+class InvoiceController extends Controller
+{
+    public function show(Invoice $invoice)
+    {
+        $qrTlv = Zatca::phase1()->generateQrCodeText(
+            sellerName: config('zatca.egs.vat_name'),
+            vatNumber: config('zatca.egs.vat_number'),
+            invoiceDate: $invoice->created_at->format('Y-m-d\TH:i:s\Z'),
+            totalAmount: (string)$invoice->total,
+            taxAmount: (string)$invoice->tax,
+        );
+
+        return view('invoice.show', compact('invoice', 'qrTlv'));
+    }
+}
+```
+
+```blade
+{{-- resources/views/invoice/show.blade.php --}}
+@extends('layouts.app')
+
+@section('content')
+    <div class="invoice">
+        <h1>Invoice #{{ $invoice->number }}</h1>
+        {{-- ... invoice details ... --}}
+
+        <div class="qr-section" style="text-align: center; margin-top: 20px;">
+            @include('zatca::qr-code', ['qrData' => $qrTlv, 'size' => 200])
+        </div>
+    </div>
+@endsection
+```
+
+> **Note:** This view is always available (no `vendor:publish` required). Run `php artisan vendor:publish --tag=zatca-views` only if you need to customize the blade template.
+
+### Method 3: Using the Model Trait
 
 Add the trait to your invoice model:
 
@@ -536,7 +592,7 @@ Then in your view:
 {!! $invoice->getZatcaQrCode(200) !!}
 ```
 
-### Method 3: PDF Generation with barryvdh/laravel-dompdf
+### Method 4: PDF Generation with barryvdh/laravel-dompdf
 
 ```php
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -580,7 +636,7 @@ In `invoice/pdf.blade.php`:
 </html>
 ```
 
-### Method 4: PDF with mpdf (for ERP System or E-commerce)
+### Method 5: PDF with mpdf (for ERP System or E-commerce)
 
 ```php
 use Mpdf\Mpdf;
@@ -597,7 +653,7 @@ $mpdf->WriteHTML($html);
 $mpdf->Output('invoice.pdf', 'D');
 ```
 
-### Method 5: Advanced Output (Base64, Data URI, File)
+### Method 6: Advanced Output (Base64, Data URI, File)
 
 ```php
 // Base64-encoded image (SVG or PNG depending on installed packages)
