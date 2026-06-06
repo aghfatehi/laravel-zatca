@@ -29,8 +29,8 @@
         "phpunit/phpunit": "^9.0|^10.0|^11.0"
     },
     "suggest": {
-        "endroid/qr-code": "Required for rendering QR code as images (PNG/SVG). Install with: composer require endroid/qr-code",
-        "simplesoftwareio/simple-qrcode": "Alternative QR code library using BaconQrCode"
+        "simplesoftwareio/simple-qrcode": "REQUIRED for ZATCA-compatible QR codes. Install with: composer require simplesoftwareio/simple-qrcode",
+        "endroid/qr-code": "Alternative QR library (also ZATCA-compatible). Install with: composer require endroid/qr-code"
     },
     "autoload": {
         "psr-4": {

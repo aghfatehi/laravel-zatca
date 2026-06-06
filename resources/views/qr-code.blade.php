@@ -1,4 +1,13 @@
-{{-- QR code renderer: auto-detects the best available library --}}
+{{--
+    QR Code Renderer
+    ────────────────
+    Requires one of these packages for ZATCA-compatible output:
+      - composer require simplesoftwareio/simple-qrcode  (recommended)
+      - composer require endroid/qr-code
+    
+    The built-in SvgQrGenerator is a visual-only fallback and is NOT
+    compatible with the official ZATCA (Fatoora) app.
+--}}
 @php
     $qrData = $qrData ?? '';
     $size = $size ?? 200;
@@ -13,6 +22,12 @@
         $writer = new \Endroid\QrCode\Writer\SvgWriter();
         echo $writer->write($qr)->getString();
     } else {
-        echo app(\Aghfatehi\Zatca\Services\SvgQrGenerator::class)->generate($qrData, $size);
+        $fallbackSvg = app(\Aghfatehi\Zatca\Services\SvgQrGenerator::class)->generate($qrData, $size);
+        $fallbackSvg = str_replace(
+            '</svg>',
+            '<text x="'.($size/2).'" y="'.($size-5).'" text-anchor="middle" font-size="8" fill="red">⚠ Install simple-qrcode or endroid/qr-code</text></svg>',
+            $fallbackSvg
+        );
+        echo $fallbackSvg;
     }
 @endphp
