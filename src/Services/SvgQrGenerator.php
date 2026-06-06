@@ -88,7 +88,10 @@ class SvgQrGenerator
     private function selectVersion(int $dataLen): int
     {
         for ($v = 1; $v <= 10; $v++) {
-            if ($dataLen <= self::$versionInfo[$v - 1][2]) {
+            $rsBlocks = $this->getRsBlocksForVersion($v);
+            $byteCapacity = array_sum(array_column($rsBlocks, 'data'));
+
+            if ($dataLen <= $byteCapacity) {
                 return $v;
             }
         }
@@ -96,12 +99,30 @@ class SvgQrGenerator
         return 10;
     }
 
+    private function getRsBlocksForVersion(int $version): array
+    {
+        $blocks = [
+            [1 => [1, 26, 19, 7], 2 => [1, 44, 34, 10], 3 => [1, 70, 55, 15], 4 => [1, 100, 80, 20], 5 => [1, 134, 108, 26],
+             6 => [2, 86, 68, 18], 7 => [2, 98, 78, 20], 8 => [2, 121, 97, 24], 9 => [2, 146, 116, 30], 10 => [2, 86, 68, 18]],
+        ][0][$version] ?? [1, 100, 80, 20];
+
+        $numBlocks = $blocks[0];
+        $result = [];
+
+        for ($i = 0; $i < $numBlocks; $i++) {
+            $result[] = ['data' => $blocks[2], 'ec' => $blocks[3]];
+        }
+
+        return $result;
+    }
+
     private function encodeData(): array
     {
         $mode = 0b0100;
         $charCount = strlen($this->data);
-        $versionInfo = self::$versionInfo[$this->version - 1];
-        $totalDataBytes = $versionInfo[2];
+
+        $rsBlocks = $this->getRsBlocks();
+        $totalDataBytes = array_sum(array_column($rsBlocks, 'data'));
         $totalDataBits = $totalDataBytes * 8;
 
         $charCountBits = $this->version < 10 ? 8 : 16;
@@ -176,19 +197,7 @@ class SvgQrGenerator
 
     private function getRsBlocks(): array
     {
-        $blocks = [
-            [1 => [1, 26, 19, 7], 2 => [1, 44, 34, 10], 3 => [1, 70, 55, 15], 4 => [1, 100, 80, 20], 5 => [1, 134, 108, 26],
-             6 => [2, 86, 68, 18], 7 => [2, 98, 78, 20], 8 => [2, 121, 97, 24], 9 => [2, 146, 116, 30], 10 => [2, 86, 68, 18]],
-        ][0][$this->version] ?? [1, 100, 80, 20];
-
-        $numBlocks = $blocks[0];
-        $result = [];
-
-        for ($i = 0; $i < $numBlocks; $i++) {
-            $result[] = ['data' => $blocks[2], 'ec' => $blocks[3]];
-        }
-
-        return $result;
+        return $this->getRsBlocksForVersion($this->version);
     }
 
     private function reedSolomon(array $data, int $ecCount): array
